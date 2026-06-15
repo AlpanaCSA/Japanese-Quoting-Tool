@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japan Ex Scheme – Quoting Helper</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+  :root {
+    --bg:     #f6f8fa;
+    --sf:     #ffffff;
+    --sf2:    #f6f8fa;
+    --bd:     #d0d7de;
+    --bd2:    #e4e8ec;
+    --orange: #bc4c00;
+    --orange2:#d18616;
+    --green:  #1a7f37;
+    --red:    #cf222e;
+    --amber:  #9a6700;
+    --blue:   #0969da;
+    --brown:  #7d4e2d;
+    --tx:     #1f2328;
+    --tx2:    #57606a;
+    --mono:   'IBM Plex Mono', monospace;
+    --sans:   'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0 }
+  body { background:var(--bg); color:var(--tx); font-family:var(--sans); font-size:14px; min-height:100vh; padding:32px 16px }
+  .shell { max-width:960px; margin:0 auto }
+
+  header { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:20px; border-bottom:2px solid var(--bd) }
+  .logo { width:44px; height:44px; background:var(--orange); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; font-size:13px; color:#fff; flex-shrink:0; line-height:1.3; text-align:center }
+  header h1 { font-size:19px; font-weight:600; color:var(--tx) }
+  header p  { font-size:12px; color:var(--tx2); margin-top:3px }
+
+  .panel { background:var(--sf); border:1px solid var(--bd); border-radius:8px; padding:24px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,.06) }
+  .ptitle { font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); margin-bottom:16px; display:flex; align-items:center; gap:8px }
+  .ptitle::before { content:''; display:inline-block; width:3px; height:14px; background:var(--orange); border-radius:2px }
+
+  label { display:block; font-size:12px; font-weight:600; color:var(--tx2); margin-bottom:6px; letter-spacing:.03em }
+  textarea { width:100%; background:var(--sf); border:1px solid var(--bd); border-radius:6px; color:var(--tx); font-family:var(--mono); font-size:13px; padding:10px 12px; outline:none; transition:border-color .15s; resize:vertical; min-height:100px }
+  textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(9,105,218,.12) }
+  input[type=text], input[type=number] { background:var(--sf); border:1px solid var(--bd); border-radius:6px; color:var(--tx); font-family:var(--mono); font-size:12px; padding:7px 10px; outline:none; transition:border-color .15s }
+  input[type=text]:focus, input[type=number]:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(9,105,218,.1) }
+  .field { margin-bottom:20px }
+
+  .hint-box { background:#ddf4ff; border:1px solid #80ccff; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#0550ae; line-height:1.75 }
+  .hint-box strong { font-weight:600; display:block; margin-bottom:4px; color:#033d8b }
+  .hint-box code { background:rgba(9,105,218,.1); border-radius:3px; padding:1px 5px; font-family:var(--mono); font-size:11px }
+
+  .check-row { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--sf2); border:1px solid var(--bd); border-radius:6px; cursor:pointer; user-select:none }
+  .check-row input[type=checkbox] { width:16px; height:16px; accent-color:var(--blue); margin-top:2px; flex-shrink:0; cursor:pointer }
+  .ck-label { font-size:13px; line-height:1.5; color:var(--tx) }
+  .sub-field { display:none; margin-top:10px; padding:14px; background:var(--sf2); border:1px solid var(--bd); border-radius:6px }
+  .sub-field.visible { display:block }
+
+  /* Standards input */
+  .std-inputs { display:flex; flex-direction:column; gap:6px }
+  .std-col-hdrs { display:grid; grid-template-columns:1fr 64px 80px 30px; gap:6px; margin-bottom:4px; padding:0 2px }
+  .std-col-hdrs span { font-size:10px; color:var(--tx2); letter-spacing:.05em; text-transform:uppercase; font-weight:600 }
+  .std-input-row { display:grid; grid-template-columns:1fr 64px 80px 30px; gap:6px; align-items:center }
+  .std-input-row input[type=text] { width:100% }
+  .std-input-row input[type=number] { width:100% }
+  .std-remove { background:var(--sf); border:1px solid var(--bd); border-radius:4px; color:var(--tx2); cursor:pointer; font-size:12px; padding:4px 6px; transition:all .15s }
+  .std-remove:hover { border-color:var(--red); color:var(--red); background:#fff5f5 }
+  .add-std-btn { display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px dashed var(--bd); border-radius:6px; color:var(--tx2); cursor:pointer; font-size:12px; padding:8px 14px; margin-top:8px; transition:all .15s; font-family:var(--sans) }
+  .add-std-btn:hover { border-color:var(--blue); color:var(--blue); background:#f0f6ff }
+
+  .btn { display:inline-flex; align-items:center; gap:8px; background:var(--orange); color:#fff; border:none; border-radius:6px; padding:10px 22px; font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; transition:background .15s, transform .1s }
+  .btn:hover { background:#a04000 } .btn:active { transform:scale(.97) }
+  .btn-ghost { background:var(--sf); border:1px solid var(--bd); color:var(--tx2); padding:8px 16px; font-size:12px }
+  .btn-ghost:hover { border-color:var(--blue); color:var(--blue); background:#f0f6ff }
+
+  .err { background:#fff5f5; border:1px solid #ffa8a8; border-radius:6px; padding:12px 14px; font-size:13px; color:var(--red); white-space:pre-wrap; margin-bottom:16px; display:none }
+  .err.show { display:block }
+  #results { display:none }
+
+  /* Results tables */
+  .tbl { width:100%; border-collapse:collapse }
+  .tbl th { text-align:left; font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--tx2); padding:8px 10px; border-bottom:2px solid var(--bd); white-space:nowrap; background:var(--sf2) }
+  .tbl td { padding:9px 10px; border-bottom:1px solid var(--bd2); font-size:12px; vertical-align:middle }
+  .tbl tr:last-child td { border-bottom:none }
+  .tbl tbody tr:hover td { background:#f0f6ff }
+
+  .tag { display:inline-flex; align-items:center; border-radius:4px; padding:2px 8px; font-family:var(--mono); font-size:10px; font-weight:600; white-space:nowrap }
+  .t-ok   { background:#dafbe1; color:var(--green); border:1px solid #adf0bb }
+  .t-warn { background:#fff8c5; color:var(--amber); border:1px solid #f5d742 }
+  .t-new  { background:#fff1d6; color:var(--brown); border:1px solid #f0b840 }
+  .upgrade-to { font-family:var(--mono); font-size:11px; color:var(--orange); background:#fff3e0; border:1px solid #ffc87a; border-radius:3px; padding:2px 7px; white-space:nowrap }
+
+  /* Cert list */
+  .cert-summary { display:flex; gap:0; margin-bottom:14px; border:1px solid var(--bd); border-radius:8px; overflow:hidden }
+  .cs-item { flex:1; padding:14px 16px; border-right:1px solid var(--bd); background:var(--sf) }
+  .cs-item:last-child { border-right:none }
+  .cs-item .lbl { font-size:11px; color:var(--tx2); margin-bottom:4px; font-weight:600; text-transform:uppercase; letter-spacing:.04em }
+  .cs-item .val { font-family:var(--mono); font-size:22px; font-weight:600 }
+  .cert-list { display:flex; flex-direction:column; gap:5px }
+  .cert-row { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--sf2); border:1px solid var(--bd2); border-radius:6px }
+  .cbadge { flex-shrink:0; width:66px; text-align:center; padding:3px 0; border-radius:4px; font-size:10px; font-weight:700; letter-spacing:.04em; font-family:var(--mono) }
+  .c-main { background:#fff3e0; color:var(--orange); border:1px solid #ffc87a }
+  .c-var  { background:#ddf4ff; color:var(--blue);   border:1px solid #80ccff }
+  .cert-marking { font-family:var(--mono); font-size:12px; color:var(--tx) }
+
+  /* Hours */
+  .h-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:12px }
+  .h-card { background:var(--sf2); border:1px solid var(--bd); border-radius:6px; padding:14px 16px }
+  .h-card .lbl { font-size:11px; color:var(--tx2); margin-bottom:4px; font-weight:600 }
+  .h-card .val { font-family:var(--mono); font-size:22px; font-weight:600; color:var(--tx) }
+  .h-card .val span { font-size:13px; color:var(--tx2); margin-left:4px }
+  .h-total { background:linear-gradient(135deg,#fff3e0,#fff8f0); border:1px solid #ffc87a; border-radius:6px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between }
+  .h-total .lbl { font-size:13px; font-weight:600; color:var(--tx) }
+  .h-total .val { font-family:var(--mono); font-size:28px; font-weight:600; color:var(--orange) }
+  .h-total .val span { font-size:14px; color:var(--tx2); margin-left:4px }
+
+  .upg-note { background:#fff8c5; border:1px solid #f5d742; border-radius:6px; padding:10px 14px; font-size:12px; color:var(--amber); margin-top:12px }
+  .action-row { display:flex; justify-content:flex-end; margin-top:18px }
+  .sec-note { font-size:11px; color:var(--tx2); margin-bottom:12px; font-style:italic }
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="logo">JP<br>Ex</div>
+  <div>
+    <h1>Japan Ex Scheme – Quoting Helper</h1>
+    <p>JNIOSH-TR-46 standard mapping &amp; certificate / hours estimation</p>
+  </div>
+</header>
+
+<div class="panel" id="inputPanel">
+  <div class="ptitle">Project Inputs</div>
+
+  <div class="field">
+    <label>IECEx Certificate Marking</label>
+    <div class="hint-box">
+      <strong>Enter the marking exactly as it appears on the IECEx certificate — one marking line per line.</strong>
+      The tool counts certificates automatically:<br>
+      &nbsp;&nbsp;• <code>Ex ia IIC T6-T1 Ga</code> or <code>Ex ia IIC T6...T1 Ga</code> → 6 certs (T6 main, T5–T1 variants)<br>
+      &nbsp;&nbsp;• <code>Ex ia IIA T6/T4 Ga</code> → 2 certs (T6 main, T4 variant)<br>
+      &nbsp;&nbsp;• Two separate marking lines → 2 certs (first = main, second = variant)<br>
+      &nbsp;&nbsp;• <code>Ex d e IIB T4 Gb</code> → 1 cert (multiple protection types = one certificate)
+    </div>
+    <textarea id="marking" rows="4" placeholder="Ex d IIC T6 Gb&#10;Ex tb IIIC T85°C Db"></textarea>
+  </div>
+
+  <div class="field">
+    <label>IECEx Standards on Certificate</label>
+    <div class="std-col-hdrs">
+      <span>Standard name</span><span>Ed No.</span><span>Year</span><span></span>
+    </div>
+    <div class="std-inputs" id="stdInputs"></div>
+    <button class="add-std-btn" onclick="addStdRow()">+ Add standard</button>
+  </div>
+
+  <div class="field">
+    <label class="check-row" for="hasComps" style="margin-bottom:0;font-weight:400;font-size:13px;color:var(--tx);">
+      <input type="checkbox" id="hasComps">
+      <span class="ck-label">Are there any certified components or separately certified equipment included (including cable glands)?</span>
+    </label>
+    <div class="sub-field" id="compSub">
+      <label>Number of previously certified equipment / components</label>
+      <input type="number" id="numComps" min="1" value="1" style="width:110px">
+    </div>
+  </div>
+
+  <div class="err" id="errBox"></div>
+  <button class="btn" onclick="calculate()">Calculate &rarr;</button>
+</div>
+
+<div id="results">
+
+  <div class="panel">
+    <div class="ptitle">Japanese Standards Mapping</div>
+    <table class="tbl">
+      <thead><tr>
+        <th>IEC Standard</th>
+        <th>Ed</th>
+        <th>Year</th>
+        <th>JNIOSH Standard</th>
+        <th>Status</th>
+        <th style="text-align:right">Hrs</th>
+        <th>Upgrade / Downgrade To</th>
+      </tr></thead>
+      <tbody id="stdBody"></tbody>
+    </table>
+    <div id="upgNote" style="display:none" class="upg-note"></div>
+  </div>
+
+  <div class="panel">
+    <div class="ptitle">Certificates Required</div>
+    <p class="sec-note">Derived from the marking above. First certificate is always Main; all subsequent are Variants.</p>
+    <div class="cert-summary" id="certSummary"></div>
+    <div class="cert-list" id="certList"></div>
+  </div>
+
+  <div class="panel">
+    <div class="ptitle">Hours Summary</div>
+    <div class="h-grid" id="hGrid"></div>
+    <div class="h-total">
+      <div class="lbl">Total Estimated Hours</div>
+      <div class="val" id="hTotal">0<span>hrs</span></div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-ghost" onclick="reset()">&#8592; Start Over</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const JPN = {
+  '60079-0':  {jniosh:'JNIOSH-TR-46-1 Dec 2020',  targetEd:7, targetStd:'IEC 60079-0:2017 Ed 7.0'},
+  '60079-1':  {jniosh:'JNIOSH-TR-46-2 Oct 2018',  targetEd:7, targetStd:'IEC 60079-1:2014 Ed 7.0'},
+  '60079-2':  {jniosh:'JNIOSH-TR-46-3 Oct 2018',  targetEd:6, targetStd:'IEC 60079-2:2014 Ed 6.0'},
+  '60079-6':  {jniosh:'JNIOSH-TR-46-4 Oct 2018',  targetEd:4, targetStd:'IEC 60079-6:2015 Ed 4.0'},
+  '60079-7':  {jniosh:'JNIOSH-TR-46-5 Oct 2018',  targetEd:5, targetStd:'IEC 60079-7:2015 Ed 5.0'},
+  '60079-11': {jniosh:'JNIOSH-TR-46-6 May 2015',  targetEd:6, targetStd:'IEC 60079-11:2011 Ed 6.0'},
+  '60079-15': {jniosh:'JNIOSH-TR-46-8 Dec 2020',  targetEd:4, targetStd:'IEC 60079-15:2017 Ed 4.0'},
+  '60079-18': {jniosh:'JNIOSH-TR-46-7 Oct 2018',  targetEd:4, targetStd:'IEC 60079-18:2014 Ed 4.0'},
+  '60079-28': {jniosh:'JNIOSH-TR-46-11 Dec 2020', targetEd:2, targetStd:'IEC 60079-28:2015 Ed 2.0'},
+  '60079-31': {jniosh:'JNIOSH-TR-46-9 Oct 2018',  targetEd:2, targetStd:'IEC 60079-31:2013 Ed 2.0'},
+};
+
+// ── STANDARDS INPUT ROWS ──────────────────────────────────────────────────────
+let stdRowCount = 0;
+function addStdRow(stdVal='', edVal='', yrVal='') {
+  stdRowCount++;
+  const id = 'std-' + stdRowCount;
+  const div = document.createElement('div');
+  div.className = 'std-input-row'; div.id = id;
+  div.innerHTML = `
+    <input type="text" placeholder="IEC 60079-0" value="${esc(stdVal)}" class="std-name">
+    <input type="number" placeholder="Ed" min="1" max="20" value="${edVal}" class="std-ed">
+    <input type="number" placeholder="Year" min="1960" max="2030" value="${yrVal}" class="std-yr">
+    <button class="std-remove" onclick="removeStdRow('${id}')" title="Remove">✕</button>`;
+  document.getElementById('stdInputs').appendChild(div);
+}
+function removeStdRow(id) { const el=document.getElementById(id); if(el) el.remove(); }
+
+// ── PARSE STANDARD ROW ────────────────────────────────────────────────────────
+function parseStdRow(row) {
+  const nameRaw = row.querySelector('.std-name').value.trim();
+  const edRaw   = row.querySelector('.std-ed').value.trim();
+  const yrRaw   = row.querySelector('.std-yr').value.trim();
+  if (!nameRaw) return null;
+  const m = nameRaw.match(/60079-(\d+(?:-\d+)?)/);
+  if (!m) return {raw:nameRaw, part:null, ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
+  return {raw:nameRaw, part:'60079-'+m[1], ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
+}
+
+// ── PARSE MARKING → CERTIFICATES ─────────────────────────────────────────────
+function expandLine(line) {
+  // Range: T6-T1 or T6...T1 (1-3 dots or dashes between two T-numbers)
+  const rangeM = line.match(/\bT(\d+)\s*(?:\.{2,3}|-)\s*T(\d+)\b/i);
+  if (rangeM) {
+    const hi=parseInt(rangeM[1]), lo=parseInt(rangeM[2]);
+    const res=[];
+    for (let t=hi; t>=lo; t--) res.push(line.replace(rangeM[0], 'T'+t));
+    return res;
+  }
+  // Slash: T6/T4 or T6/T5/T4
+  const slashM = line.match(/\bT\d+(?:\/T\d+)+\b/i);
+  if (slashM) return slashM[0].split('/').map(p => line.replace(slashM[0], p));
+  return [line];
+}
+
+function parseMarking(raw) {
+  const lines = raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  const certs = [];
+  for (const line of lines)
+    for (const marking of expandLine(line))
+      certs.push({marking, type: certs.length===0 ? 'MAIN' : 'VARIANT'});
+  return certs;
+}
+
+// ── CALCULATE ─────────────────────────────────────────────────────────────────
+function calculate() {
+  const markRaw  = document.getElementById('marking').value.trim();
+  const hasComps = document.getElementById('hasComps').checked;
+  const numComps = parseInt(document.getElementById('numComps').value)||0;
+  const errBox   = document.getElementById('errBox');
+  errBox.className='err'; errBox.textContent='';
+
+  if (!markRaw) { showErr('Please enter the IECEx certificate marking.'); return; }
+  const stdRows = Array.from(document.querySelectorAll('#stdInputs .std-input-row'));
+  if (!stdRows.length) { showErr('Please add at least one IECEx standard.'); return; }
+
+  const parsedStds = stdRows.map(parseStdRow).filter(Boolean);
+  if (!parsedStds.length) { showErr('Please enter at least one IECEx standard.'); return; }
+
+  const noEd = parsedStds.filter(p=>!p.ed);
+  if (noEd.length) { showErr('Please enter the edition number for: '+noEd.map(p=>p.raw).join(', ')); return; }
+  const unknownPart = parsedStds.filter(p=>!p.part);
+  if (unknownPart.length) { showErr('Could not read part number from: '+unknownPart.map(p=>p.raw).join(', ')); return; }
+  const notInScheme = parsedStds.filter(p=>!JPN[p.part]);
+  if (notInScheme.length) {
+    showErr('The following standard(s) are not part of the Japanese Ex scheme and must be removed:\n'+notInScheme.map(p=>p.raw).join('\n'));
+    return;
+  }
+
+  // Build std results
+  let totalHours = 0;
+  const stdResults = parsedStds.map(p => {
+    const map = JPN[p.part];
+    const edGap = map.targetEd - p.ed;  // positive = need upgrade, negative = newer
+    let statusTag, hours=0, upgradeTo='';
+
+    if (p.ed === map.targetEd) {
+      statusTag = '<span class="tag t-ok">✓ Current</span>';
+    } else if (p.ed > map.targetEd) {
+      // Newer than Japanese target — downgrade needed, 4 hrs flat
+      hours = 4;
+      totalHours += 4;
+      upgradeTo = map.targetStd;
+      statusTag = '<span class="tag t-new">↑ Newer – downgrade needed</span>';
+    } else {
+      // Older — upgrade needed, gap × 4 hrs
+      hours = edGap * 4;
+      totalHours += hours;
+      upgradeTo = map.targetStd;
+      statusTag = `<span class="tag t-warn">⚠ Upgrade needed (${edGap} ed${edGap>1?'s':''})</span>`;
+    }
+    return {raw:p.raw, ed:p.ed, year:p.year||'—', jniosh:map.jniosh, statusTag, hours, upgradeTo};
+  });
+
+  const certs = parseMarking(markRaw);
+  const compHours = hasComps ? numComps*4 : 0;
+  const grandTotal = totalHours + compHours;
+
+  // ── RENDER standards
+  document.getElementById('stdBody').innerHTML = stdResults.map(r => `
+    <tr>
+      <td style="font-family:var(--mono);font-size:12px">${esc(r.raw)}</td>
+      <td style="font-family:var(--mono);font-size:12px;text-align:center">${r.ed}</td>
+      <td style="font-family:var(--mono);font-size:12px;text-align:center;color:var(--tx2)">${r.year}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--tx2)">${esc(r.jniosh)}</td>
+      <td>${r.statusTag}</td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:${r.hours>0?'var(--amber)':'var(--tx2)'}">
+        ${r.hours>0 ? r.hours+' hrs' : '—'}
+      </td>
+      <td>${r.upgradeTo ? `<span class="upgrade-to">${esc(r.upgradeTo)}</span>` : '<span style="color:var(--tx2)">—</span>'}</td>
+    </tr>`).join('');
+
+  const upgNote = document.getElementById('upgNote');
+  if (totalHours > 0) {
+    upgNote.textContent = `Standards hours: upgrades at 4 hrs per edition step; downgrades (newer than Japanese target) at 4 hrs flat. Total: ${totalHours} hrs.`;
+    upgNote.style.display='block';
+  } else { upgNote.style.display='none'; }
+
+  // ── RENDER certs
+  const mainCt=certs.filter(c=>c.type==='MAIN').length;
+  const variantCt=certs.filter(c=>c.type==='VARIANT').length;
+  document.getElementById('certSummary').innerHTML=`
+    <div class="cs-item"><div class="lbl">Main</div><div class="val" style="color:var(--orange)">${mainCt}</div></div>
+    <div class="cs-item"><div class="lbl">Variants</div><div class="val" style="color:var(--blue)">${variantCt}</div></div>
+    <div class="cs-item"><div class="lbl">Total Certificates</div><div class="val">${certs.length}</div></div>`;
+  document.getElementById('certList').innerHTML=certs.map(c=>`
+    <div class="cert-row">
+      <span class="cbadge ${c.type==='MAIN'?'c-main':'c-var'}">${c.type}</span>
+      <span class="cert-marking">${esc(c.marking)}</span>
+    </div>`).join('');
+
+  // ── RENDER hours
+  const hItems=[{lbl:'Standards Adjustment Hours',val:totalHours,note:'Upgrade: 4 hrs × edition gap. Downgrade: 4 hrs flat.'}];
+  if (hasComps) hItems.push({lbl:`Component Assessment (${numComps} × 4 hrs)`,val:compHours,note:''});
+  document.getElementById('hGrid').innerHTML=hItems.map(h=>`
+    <div class="h-card">
+      <div class="lbl">${h.lbl}</div>
+      <div class="val">${h.val}<span>hrs</span></div>
+      ${h.note ? `<div style="font-size:10px;color:var(--tx2);margin-top:4px">${h.note}</div>` : ''}
+    </div>`).join('');
+  document.getElementById('hTotal').innerHTML=`${grandTotal}<span>hrs</span>`;
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function showErr(msg){const b=document.getElementById('errBox');b.textContent=msg;b.className='err show';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function reset(){
+  document.getElementById('marking').value='';
+  document.getElementById('stdInputs').innerHTML='';
+  stdRowCount=0;
+  addStdRow(); addStdRow(); addStdRow();
+  document.getElementById('hasComps').checked=false;
+  document.getElementById('numComps').value=1;
+  document.getElementById('compSub').classList.remove('visible');
+  document.getElementById('errBox').className='err';
+  document.getElementById('results').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('hasComps').addEventListener('change',function(){
+  document.getElementById('compSub').classList.toggle('visible',this.checked);
+});
+addStdRow(); addStdRow(); addStdRow();
+</script>
+</body>
+</html>
