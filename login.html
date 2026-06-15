@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign in — Japan Ex Scheme Quoting Helper</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Encode+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+:root {
+  --csa-cerulean:   #1867BE;
+  --csa-midnight:   #003C71;
+  --csa-mandarin:   #F14800;
+  --csa-white:      #FFFFFF;
+  --csa-coal:       #484240;
+  --csa-smoke:      #888B8D;
+  --csa-dust:       #D0D0CE;
+  --csa-powder:     #C6DAE5;
+  --csa-off-white:  #FCFCFC;
+  --csa-gray-100:   #F6F6F6;
+  --csa-gray-200:   #E6E6E6;
+  --csa-error:      #DC2323;
+  --csa-error-dark: #931516;
+  --ff-display: "Fraunces", "Garamond", "Georgia", serif;
+  --ff-sans:    "Encode Sans", "Arial", "Helvetica Neue", sans-serif;
+  --ff-mono:    "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ease-std:   cubic-bezier(0.2,0,0,1);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(420px, 0.9fr);
+  min-height: 100vh;
+  background: var(--csa-white);
+  font-family: var(--ff-sans);
+  color: var(--csa-coal);
+}
+@media (max-width: 880px) {
+  body { grid-template-columns: 1fr; }
+  .hero { display: none; }
+}
+
+/* ── Left hero ─────────────────────────────── */
+.hero {
+  position: relative;
+  background: var(--csa-midnight);
+  color: #fff;
+  padding: 52px 64px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(1200px 600px at -10% -20%, rgba(24,103,190,0.55), transparent 60%),
+    radial-gradient(900px 500px at 110% 120%, rgba(198,218,229,0.18), transparent 55%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 520px; }
+
+.brand {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 60px;
+  position: relative; z-index: 1;
+}
+.brand img { height: 32px; width: auto; }
+.brand-fallback {
+  height: 32px; padding: 0 10px;
+  background: var(--csa-cerulean);
+  display: grid; place-items: center;
+  font: 700 14px/1 var(--ff-sans); color: #fff;
+}
+.brand-divider {
+  width: 1px; height: 24px;
+  background: rgba(255,255,255,0.25);
+}
+.brand-label {
+  font: 600 11px/1 var(--ff-sans);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.7);
+}
+
+.hero h1 {
+  font: 500 46px/54px var(--ff-display);
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0 0 18px;
+  font-variation-settings: "opsz" 96;
+}
+.hero .sub-num {
+  font: 400 13px/1 var(--ff-mono);
+  color: var(--csa-powder);
+  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+}
+.hero p.lede {
+  font: 400 17px/27px var(--ff-sans);
+  color: rgba(255,255,255,0.8);
+  margin: 0 0 40px;
+  max-width: 440px;
+}
+.hero-stats {
+  display: grid; grid-template-columns: repeat(3, auto);
+  gap: 32px; margin-top: 4px;
+}
+.stat-num {
+  font: 500 30px/1 var(--ff-display);
+  letter-spacing: -0.01em;
+  color: var(--csa-powder);
+}
+.stat-lbl {
+  font: 600 10px/1.4 var(--ff-sans);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.6);
+  margin-top: 7px;
+  max-width: 110px;
+}
+.hero-foot {
+  position: relative; z-index: 1;
+  font: 400 12px/1.5 var(--ff-sans);
+  color: rgba(255,255,255,0.5);
+}
+.hero-foot strong { color: rgba(255,255,255,0.8); font-weight: 600; }
+
+/* ── Right form ─────────────────────────────── */
+.form-panel {
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px;
+  background: var(--csa-off-white);
+}
+.form-card { width: 100%; max-width: 380px; }
+
+.eyebrow {
+  font: 700 10px/1 var(--ff-sans);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--csa-cerulean);
+  margin-bottom: 14px;
+}
+.form-card h2 {
+  font: 500 28px/34px var(--ff-display);
+  letter-spacing: -0.01em;
+  color: var(--csa-midnight);
+  margin: 0 0 10px;
+}
+.form-card p.sub {
+  font: 400 14px/22px var(--ff-sans);
+  color: var(--csa-smoke);
+  margin: 0 0 32px;
+}
+
+label {
+  display: block;
+  font: 700 10px/1 var(--ff-sans);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--csa-coal);
+  margin-bottom: 10px;
+}
+input[type=password] {
+  width: 100%; padding: 14px 16px;
+  border: 1px solid var(--csa-gray-200);
+  border-radius: 0;
+  background: #fff;
+  font: 500 16px/1.2 var(--ff-sans);
+  color: var(--csa-coal);
+  outline: none;
+  transition: border-color 120ms var(--ease-std), box-shadow 120ms var(--ease-std);
+}
+input[type=password]:focus {
+  border-color: var(--csa-cerulean);
+  box-shadow: 0 0 0 4px rgba(24,103,190,0.18);
+}
+
+button[type=submit] {
+  width: 100%; margin-top: 20px;
+  padding: 14px 18px;
+  background: var(--csa-cerulean);
+  color: #fff; border: none; cursor: pointer;
+  font: 700 12px/1 var(--ff-sans);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: background 120ms var(--ease-std), transform 120ms var(--ease-std);
+}
+button[type=submit]:hover:not(:disabled) { background: var(--csa-midnight); }
+button[type=submit]:active:not(:disabled) { transform: translateY(1px); }
+button[type=submit]:disabled { background: var(--csa-dust); color: rgba(255,255,255,0.7); cursor: wait; }
+
+.error {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #FBE4E4;
+  color: var(--csa-error-dark);
+  border-left: 3px solid var(--csa-error-dark);
+  font: 500 13px/1.4 var(--ff-sans);
+  display: none;
+}
+.error.visible { display: block; }
+
+.foot {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--csa-gray-200);
+  font: 400 12px/1.6 var(--ff-sans);
+  color: var(--csa-smoke);
+}
+.foot strong { color: var(--csa-coal); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- Left: hero -->
+<aside class="hero">
+  <div>
+    <div class="brand">
+      <img src="/assets/csa-logo.svg" alt="CSA Group"
+           onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'brand-fallback',textContent:'CSA'}))" />
+      <div class="brand-divider"></div>
+      <span class="brand-label">CSA Group</span>
+    </div>
+
+    <div class="hero-inner">
+      <div class="sub-num">JNIOSH-TR-46</div>
+      <h1>Japan Ex Scheme<br>Quoting Helper.</h1>
+      <p class="lede">
+        Standard mapping, certificate counting, and hours estimation
+        for Japanese Ex scheme quotes — fast and accurate.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">10</div>
+          <div class="stat-lbl">JNIOSH standards covered</div>
+        </div>
+        <div>
+          <div class="stat-num">4 hrs</div>
+          <div class="stat-lbl">per edition step</div>
+        </div>
+        <div>
+          <div class="stat-num">2014–20</div>
+          <div class="stat-lbl">Target editions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-foot">
+    <strong>Internal CSA Group tool.</strong> For Ex Certification Unit use only.
+  </div>
+</aside>
+
+<!-- Right: sign-in form -->
+<section class="form-panel">
+  <div class="form-card">
+    <div class="eyebrow">Sign in</div>
+    <h2>Welcome back.</h2>
+    <p class="sub">Enter the team access password to continue.</p>
+
+    <form id="loginForm" autocomplete="off" novalidate>
+      <label for="password">Access password</label>
+      <input id="password" name="password" type="password"
+             autocomplete="current-password" autofocus required />
+      <div id="errorBox" class="error" role="alert"></div>
+      <button id="submitBtn" type="submit">Sign in</button>
+    </form>
+
+    <div class="foot">
+      Don't have the password? Contact <strong>Ed</strong> or your team lead.
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  // If already authenticated, skip login
+  if (sessionStorage.getItem('jpn_auth') === 'authenticated') {
+    window.location.replace('/');
+    return;
+  }
+
+  var HASH = 'a02a07653675a83763b8a568669ff6abc60c29ba5c504f4165069845962013d5';
+
+  var form = document.getElementById('loginForm');
+  var pw   = document.getElementById('password');
+  var btn  = document.getElementById('submitBtn');
+  var err  = document.getElementById('errorBox');
+
+  function showError(msg) { err.textContent = msg; err.classList.add('visible'); }
+  function hideError()    { err.classList.remove('visible'); }
+
+  async function sha256(str) {
+    var buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideError();
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    try {
+      var h = await sha256(pw.value);
+      if (h === HASH) {
+        sessionStorage.setItem('jpn_auth', 'authenticated');
+        window.location.replace('/');
+      } else {
+        showError('Incorrect password. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Sign in';
+        pw.focus(); pw.select();
+      }
+    } catch (_) {
+      showError('An error occurred. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    }
+  });
+})();
+</script>
+</body>
+</html>

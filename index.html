@@ -3,129 +3,286 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Japan Ex Scheme – Quoting Helper</title>
+<title>Japan Ex Scheme – Quoting Helper | CSA Group</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
-  :root {
-    --bg:     #f6f8fa;
-    --sf:     #ffffff;
-    --sf2:    #f6f8fa;
-    --bd:     #d0d7de;
-    --bd2:    #e4e8ec;
-    --orange: #bc4c00;
-    --orange2:#d18616;
-    --green:  #1a7f37;
-    --red:    #cf222e;
-    --amber:  #9a6700;
-    --blue:   #0969da;
-    --brown:  #7d4e2d;
-    --tx:     #1f2328;
-    --tx2:    #57606a;
-    --mono:   'IBM Plex Mono', monospace;
-    --sans:   'IBM Plex Sans', sans-serif;
-  }
-  * { box-sizing:border-box; margin:0; padding:0 }
-  body { background:var(--bg); color:var(--tx); font-family:var(--sans); font-size:14px; min-height:100vh; padding:32px 16px }
-  .shell { max-width:960px; margin:0 auto }
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Encode+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
-  header { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:20px; border-bottom:2px solid var(--bd) }
-  .logo { width:44px; height:44px; background:var(--orange); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; font-size:13px; color:#fff; flex-shrink:0; line-height:1.3; text-align:center }
-  header h1 { font-size:19px; font-weight:600; color:var(--tx) }
-  header p  { font-size:12px; color:var(--tx2); margin-top:3px }
+:root {
+  --csa-cerulean:   #1867BE;
+  --csa-midnight:   #003C71;
+  --csa-mandarin:   #F14800;
+  --csa-white:      #FFFFFF;
+  --csa-coal:       #484240;
+  --csa-smoke:      #888B8D;
+  --csa-dust:       #D0D0CE;
+  --csa-powder:     #C6DAE5;
+  --csa-off-white:  #FCFCFC;
+  --csa-gray-100:   #F6F6F6;
+  --csa-gray-200:   #E6E6E6;
+  --csa-gray-700:   #575757;
+  --csa-error:      #DC2323;
+  --csa-error-dark: #931516;
+  --csa-success:    #149000;
+  --csa-success-dk: #056D0F;
+  --csa-warning:    #D23F00;
+  --ff-display: "Fraunces", "Garamond", "Georgia", serif;
+  --ff-sans:    "Encode Sans", "Arial", "Helvetica Neue", sans-serif;
+  --ff-mono:    "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ease-std:   cubic-bezier(0.2,0,0,1);
+}
 
-  .panel { background:var(--sf); border:1px solid var(--bd); border-radius:8px; padding:24px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,.06) }
-  .ptitle { font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); margin-bottom:16px; display:flex; align-items:center; gap:8px }
-  .ptitle::before { content:''; display:inline-block; width:3px; height:14px; background:var(--orange); border-radius:2px }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--csa-gray-100);
+  color: var(--csa-coal);
+  font-family: var(--ff-sans);
+  font-size: 14px;
+  min-height: 100vh;
+}
 
-  label { display:block; font-size:12px; font-weight:600; color:var(--tx2); margin-bottom:6px; letter-spacing:.03em }
-  textarea { width:100%; background:var(--sf); border:1px solid var(--bd); border-radius:6px; color:var(--tx); font-family:var(--mono); font-size:13px; padding:10px 12px; outline:none; transition:border-color .15s; resize:vertical; min-height:100px }
-  textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(9,105,218,.12) }
-  input[type=text], input[type=number] { background:var(--sf); border:1px solid var(--bd); border-radius:6px; color:var(--tx); font-family:var(--mono); font-size:12px; padding:7px 10px; outline:none; transition:border-color .15s }
-  input[type=text]:focus, input[type=number]:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(9,105,218,.1) }
-  .field { margin-bottom:20px }
+/* ── TOP BAR ───────────────────────────────────── */
+.topbar {
+  background: var(--csa-midnight);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  border-bottom: 3px solid var(--csa-cerulean);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo img { height: 26px; width: auto; display: block; }
+.topbar-logo-fallback {
+  height: 26px; padding: 0 8px;
+  background: var(--csa-cerulean);
+  display: grid; place-items: center;
+  font: 700 13px/1 var(--ff-sans); color: #fff;
+}
+.topbar-divider { width: 1px; height: 26px; background: rgba(255,255,255,0.2); }
+.topbar-titles  { display: flex; flex-direction: column; gap: 2px; }
+.topbar-name {
+  font: 600 12px/1 var(--ff-sans);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+}
+.topbar-sub {
+  font: 400 10px/1 var(--ff-sans);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+.btn-signout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.6);
+  padding: 6px 14px;
+  font: 600 10px/1 var(--ff-sans);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 120ms var(--ease-std), color 120ms var(--ease-std), background 120ms var(--ease-std);
+}
+.btn-signout:hover {
+  border-color: rgba(255,255,255,0.55);
+  color: #fff; background: rgba(255,255,255,0.07);
+}
 
-  .hint-box { background:#ddf4ff; border:1px solid #80ccff; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#0550ae; line-height:1.75 }
-  .hint-box strong { font-weight:600; display:block; margin-bottom:4px; color:#033d8b }
-  .hint-box code { background:rgba(9,105,218,.1); border-radius:3px; padding:1px 5px; font-family:var(--mono); font-size:11px }
+/* ── PAGE ──────────────────────────────────────── */
+.shell { max-width: 960px; margin: 0 auto; padding: 28px 16px 48px; }
 
-  .check-row { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--sf2); border:1px solid var(--bd); border-radius:6px; cursor:pointer; user-select:none }
-  .check-row input[type=checkbox] { width:16px; height:16px; accent-color:var(--blue); margin-top:2px; flex-shrink:0; cursor:pointer }
-  .ck-label { font-size:13px; line-height:1.5; color:var(--tx) }
-  .sub-field { display:none; margin-top:10px; padding:14px; background:var(--sf2); border:1px solid var(--bd); border-radius:6px }
-  .sub-field.visible { display:block }
+.panel {
+  background: var(--csa-white);
+  border: 1px solid var(--csa-gray-200);
+  padding: 24px; margin-bottom: 14px;
+  box-shadow: 0 1px 3px rgba(72,66,64,0.07);
+}
+.ptitle {
+  font: 700 10px/1 var(--ff-sans);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--csa-cerulean);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ptitle::before {
+  content: ''; display: inline-block;
+  width: 3px; height: 14px;
+  background: var(--csa-cerulean); flex-shrink: 0;
+}
 
-  /* Standards input */
-  .std-inputs { display:flex; flex-direction:column; gap:6px }
-  .std-col-hdrs { display:grid; grid-template-columns:1fr 64px 80px 30px; gap:6px; margin-bottom:4px; padding:0 2px }
-  .std-col-hdrs span { font-size:10px; color:var(--tx2); letter-spacing:.05em; text-transform:uppercase; font-weight:600 }
-  .std-input-row { display:grid; grid-template-columns:1fr 64px 80px 30px; gap:6px; align-items:center }
-  .std-input-row input[type=text] { width:100% }
-  .std-input-row input[type=number] { width:100% }
-  .std-remove { background:var(--sf); border:1px solid var(--bd); border-radius:4px; color:var(--tx2); cursor:pointer; font-size:12px; padding:4px 6px; transition:all .15s }
-  .std-remove:hover { border-color:var(--red); color:var(--red); background:#fff5f5 }
-  .add-std-btn { display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px dashed var(--bd); border-radius:6px; color:var(--tx2); cursor:pointer; font-size:12px; padding:8px 14px; margin-top:8px; transition:all .15s; font-family:var(--sans) }
-  .add-std-btn:hover { border-color:var(--blue); color:var(--blue); background:#f0f6ff }
+/* ── FORM ──────────────────────────────────────── */
+label {
+  display: block;
+  font: 700 10px/1 var(--ff-sans);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--csa-coal); margin-bottom: 7px;
+}
+textarea {
+  width: 100%; background: var(--csa-white);
+  border: 1px solid var(--csa-gray-200);
+  color: var(--csa-coal);
+  font: 400 13px/1.5 var(--ff-mono);
+  padding: 10px 12px; outline: none;
+  resize: vertical; min-height: 100px;
+  transition: border-color 120ms var(--ease-std), box-shadow 120ms var(--ease-std);
+}
+textarea:focus {
+  border-color: var(--csa-cerulean);
+  box-shadow: 0 0 0 3px rgba(24,103,190,0.14);
+}
+input[type=text], input[type=number] {
+  background: var(--csa-white); border: 1px solid var(--csa-gray-200);
+  color: var(--csa-coal); font: 400 12px/1 var(--ff-mono);
+  padding: 7px 10px; outline: none;
+  transition: border-color 120ms var(--ease-std), box-shadow 120ms var(--ease-std);
+}
+input[type=text]:focus, input[type=number]:focus {
+  border-color: var(--csa-cerulean);
+  box-shadow: 0 0 0 3px rgba(24,103,190,0.12);
+}
+.field { margin-bottom: 22px; }
 
-  .btn { display:inline-flex; align-items:center; gap:8px; background:var(--orange); color:#fff; border:none; border-radius:6px; padding:10px 22px; font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; transition:background .15s, transform .1s }
-  .btn:hover { background:#a04000 } .btn:active { transform:scale(.97) }
-  .btn-ghost { background:var(--sf); border:1px solid var(--bd); color:var(--tx2); padding:8px 16px; font-size:12px }
-  .btn-ghost:hover { border-color:var(--blue); color:var(--blue); background:#f0f6ff }
+.hint-box {
+  background: #EBF2FA; border: 1px solid #B3CDE8;
+  border-left: 3px solid var(--csa-cerulean);
+  padding: 10px 14px; margin-bottom: 14px;
+  font: 400 12px/1.75 var(--ff-sans); color: var(--csa-midnight);
+}
+.hint-box strong { font-weight: 700; display: block; margin-bottom: 5px; color: var(--csa-midnight); }
+.hint-box code   { background: rgba(24,103,190,0.1); padding: 1px 5px; font: 400 11px/1 var(--ff-mono); }
 
-  .err { background:#fff5f5; border:1px solid #ffa8a8; border-radius:6px; padding:12px 14px; font-size:13px; color:var(--red); white-space:pre-wrap; margin-bottom:16px; display:none }
-  .err.show { display:block }
-  #results { display:none }
+.check-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px; background: var(--csa-gray-100);
+  border: 1px solid var(--csa-gray-200);
+  cursor: pointer; user-select: none; margin-bottom: 0;
+}
+.check-row input[type=checkbox] {
+  width: 15px; height: 15px; accent-color: var(--csa-cerulean);
+  margin-top: 3px; flex-shrink: 0; cursor: pointer;
+}
+.ck-label { font: 400 13px/1.5 var(--ff-sans); color: var(--csa-coal); text-transform: none; letter-spacing: normal; }
+.sub-field {
+  display: none; margin-top: 8px; padding: 14px;
+  background: var(--csa-gray-100); border: 1px solid var(--csa-gray-200); border-top: none;
+}
+.sub-field.visible { display: block; }
+.sub-field label   { margin-bottom: 8px; }
 
-  /* Results tables */
-  .tbl { width:100%; border-collapse:collapse }
-  .tbl th { text-align:left; font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--tx2); padding:8px 10px; border-bottom:2px solid var(--bd); white-space:nowrap; background:var(--sf2) }
-  .tbl td { padding:9px 10px; border-bottom:1px solid var(--bd2); font-size:12px; vertical-align:middle }
-  .tbl tr:last-child td { border-bottom:none }
-  .tbl tbody tr:hover td { background:#f0f6ff }
+.std-inputs { display: flex; flex-direction: column; gap: 6px; }
+.std-col-hdrs {
+  display: grid; grid-template-columns: 1fr 64px 80px 30px;
+  gap: 6px; margin-bottom: 4px; padding: 0 2px;
+}
+.std-col-hdrs span { font: 700 9px/1 var(--ff-sans); color: var(--csa-smoke); letter-spacing: 0.08em; text-transform: uppercase; }
+.std-input-row { display: grid; grid-template-columns: 1fr 64px 80px 30px; gap: 6px; align-items: center; }
+.std-input-row input[type=text],
+.std-input-row input[type=number] { width: 100%; }
+.std-remove {
+  background: var(--csa-white); border: 1px solid var(--csa-gray-200);
+  color: var(--csa-smoke); cursor: pointer; font-size: 12px; padding: 4px 6px;
+  transition: border-color 120ms var(--ease-std), color 120ms var(--ease-std), background 120ms var(--ease-std);
+}
+.std-remove:hover { border-color: var(--csa-error); color: var(--csa-error); background: #FBE4E4; }
+.add-std-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: 1px dashed var(--csa-dust);
+  color: var(--csa-smoke); cursor: pointer;
+  font: 500 12px/1 var(--ff-sans); padding: 8px 14px; margin-top: 8px;
+  transition: border-color 120ms var(--ease-std), color 120ms var(--ease-std), background 120ms var(--ease-std);
+}
+.add-std-btn:hover { border-color: var(--csa-cerulean); color: var(--csa-cerulean); background: #EBF2FA; }
 
-  .tag { display:inline-flex; align-items:center; border-radius:4px; padding:2px 8px; font-family:var(--mono); font-size:10px; font-weight:600; white-space:nowrap }
-  .t-ok   { background:#dafbe1; color:var(--green); border:1px solid #adf0bb }
-  .t-warn { background:#fff8c5; color:var(--amber); border:1px solid #f5d742 }
-  .t-new  { background:#fff1d6; color:var(--brown); border:1px solid #f0b840 }
-  .upgrade-to { font-family:var(--mono); font-size:11px; color:var(--orange); background:#fff3e0; border:1px solid #ffc87a; border-radius:3px; padding:2px 7px; white-space:nowrap }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--csa-cerulean); color: #fff; border: none;
+  padding: 12px 28px; font: 700 12px/1 var(--ff-sans);
+  letter-spacing: 0.07em; text-transform: uppercase;
+  cursor: pointer; transition: background 120ms var(--ease-std), transform 100ms var(--ease-std);
+}
+.btn:hover  { background: var(--csa-midnight); }
+.btn:active { transform: translateY(1px); }
+.btn-ghost {
+  background: var(--csa-white); border: 1px solid var(--csa-gray-200);
+  color: var(--csa-smoke); padding: 10px 20px; font-size: 11px;
+}
+.btn-ghost:hover { border-color: var(--csa-cerulean); color: var(--csa-cerulean); background: #EBF2FA; }
 
-  /* Cert list */
-  .cert-summary { display:flex; gap:0; margin-bottom:14px; border:1px solid var(--bd); border-radius:8px; overflow:hidden }
-  .cs-item { flex:1; padding:14px 16px; border-right:1px solid var(--bd); background:var(--sf) }
-  .cs-item:last-child { border-right:none }
-  .cs-item .lbl { font-size:11px; color:var(--tx2); margin-bottom:4px; font-weight:600; text-transform:uppercase; letter-spacing:.04em }
-  .cs-item .val { font-family:var(--mono); font-size:22px; font-weight:600 }
-  .cert-list { display:flex; flex-direction:column; gap:5px }
-  .cert-row { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--sf2); border:1px solid var(--bd2); border-radius:6px }
-  .cbadge { flex-shrink:0; width:66px; text-align:center; padding:3px 0; border-radius:4px; font-size:10px; font-weight:700; letter-spacing:.04em; font-family:var(--mono) }
-  .c-main { background:#fff3e0; color:var(--orange); border:1px solid #ffc87a }
-  .c-var  { background:#ddf4ff; color:var(--blue);   border:1px solid #80ccff }
-  .cert-marking { font-family:var(--mono); font-size:12px; color:var(--tx) }
+.err {
+  background: #FBE4E4; border-left: 3px solid var(--csa-error-dark);
+  padding: 12px 14px; font: 500 13px/1.4 var(--ff-sans);
+  color: var(--csa-error-dark); white-space: pre-wrap; margin-bottom: 16px; display: none;
+}
+.err.show { display: block; }
+#results  { display: none; }
 
-  /* Hours */
-  .h-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:12px }
-  .h-card { background:var(--sf2); border:1px solid var(--bd); border-radius:6px; padding:14px 16px }
-  .h-card .lbl { font-size:11px; color:var(--tx2); margin-bottom:4px; font-weight:600 }
-  .h-card .val { font-family:var(--mono); font-size:22px; font-weight:600; color:var(--tx) }
-  .h-card .val span { font-size:13px; color:var(--tx2); margin-left:4px }
-  .h-total { background:linear-gradient(135deg,#fff3e0,#fff8f0); border:1px solid #ffc87a; border-radius:6px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between }
-  .h-total .lbl { font-size:13px; font-weight:600; color:var(--tx) }
-  .h-total .val { font-family:var(--mono); font-size:28px; font-weight:600; color:var(--orange) }
-  .h-total .val span { font-size:14px; color:var(--tx2); margin-left:4px }
+/* ── RESULTS TABLE ─────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  text-align: left; font: 700 9px/1 var(--ff-sans);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--csa-smoke); padding: 8px 10px;
+  border-bottom: 2px solid var(--csa-gray-200);
+  white-space: nowrap; background: var(--csa-gray-100);
+}
+.tbl td { padding: 9px 10px; border-bottom: 1px solid var(--csa-gray-200); font-size: 12px; vertical-align: middle; }
+.tbl tr:last-child td  { border-bottom: none; }
+.tbl tbody tr:hover td { background: #EBF2FA; }
 
-  .upg-note { background:#fff8c5; border:1px solid #f5d742; border-radius:6px; padding:10px 14px; font-size:12px; color:var(--amber); margin-top:12px }
-  .action-row { display:flex; justify-content:flex-end; margin-top:18px }
-  .sec-note { font-size:11px; color:var(--tx2); margin-bottom:12px; font-style:italic }
+.tag { display: inline-flex; align-items: center; padding: 2px 8px; font: 700 10px/1.4 var(--ff-mono); letter-spacing: 0.04em; white-space: nowrap; }
+.t-ok   { background: #E6F4E4; color: var(--csa-success-dk); border: 1px solid #A8D5A2; }
+.t-warn { background: #FBE8E0; color: var(--csa-warning);    border: 1px solid #F0A884; }
+.t-new  { background: #FBF0E6; color: var(--csa-mandarin);   border: 1px solid #F0C096; }
+.upgrade-to { font: 400 11px/1 var(--ff-mono); color: var(--csa-cerulean); background: #EBF2FA; border: 1px solid #B3CDE8; padding: 2px 7px; white-space: nowrap; }
+
+/* ── CERT LIST ─────────────────────────────────── */
+.cert-summary { display: flex; margin-bottom: 14px; border: 1px solid var(--csa-gray-200); overflow: hidden; }
+.cs-item { flex: 1; padding: 14px 16px; border-right: 1px solid var(--csa-gray-200); background: var(--csa-white); }
+.cs-item:last-child { border-right: none; }
+.cs-item .lbl { font: 700 10px/1 var(--ff-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--csa-smoke); margin-bottom: 6px; }
+.cs-item .val { font: 600 22px/1 var(--ff-mono); }
+.cert-list { display: flex; flex-direction: column; gap: 5px; }
+.cert-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--csa-gray-100); border: 1px solid var(--csa-gray-200); }
+.cbadge { flex-shrink: 0; width: 66px; text-align: center; padding: 3px 0; font: 700 10px/1.4 var(--ff-mono); letter-spacing: 0.05em; }
+.c-main { background: #EBF2FA; color: var(--csa-midnight); border: 1px solid #B3CDE8; }
+.c-var  { background: var(--csa-gray-100); color: var(--csa-smoke); border: 1px solid var(--csa-gray-200); }
+.cert-marking { font: 400 12px/1 var(--ff-mono); color: var(--csa-coal); }
+
+/* ── HOURS ─────────────────────────────────────── */
+.h-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.h-card { background: var(--csa-gray-100); border: 1px solid var(--csa-gray-200); padding: 14px 16px; }
+.h-card .lbl  { font: 600 11px/1.3 var(--ff-sans); color: var(--csa-smoke); margin-bottom: 6px; }
+.h-card .val  { font: 600 22px/1 var(--ff-mono); color: var(--csa-coal); }
+.h-card .val span { font-size: 13px; color: var(--csa-smoke); margin-left: 4px; }
+.h-card .note { font: 400 10px/1.4 var(--ff-sans); color: var(--csa-smoke); margin-top: 6px; }
+.h-total { background: var(--csa-midnight); padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; }
+.h-total .lbl { font: 600 13px/1 var(--ff-sans); color: rgba(255,255,255,0.85); }
+.h-total .val { font: 600 30px/1 var(--ff-mono); color: var(--csa-powder); }
+.h-total .val span { font-size: 14px; color: rgba(255,255,255,0.45); margin-left: 5px; }
+
+.upg-note { background: #FBF0E6; border: 1px solid #F0C096; padding: 10px 14px; font: 400 12px/1.5 var(--ff-sans); color: var(--csa-warning); margin-top: 12px; }
+.action-row { display: flex; justify-content: flex-end; margin-top: 18px; }
+.sec-note   { font: 400 11px/1.4 var(--ff-sans); color: var(--csa-smoke); margin-bottom: 14px; font-style: italic; }
 </style>
 </head>
 <body>
-<div class="shell">
-<header>
-  <div class="logo">JP<br>Ex</div>
-  <div>
-    <h1>Japan Ex Scheme – Quoting Helper</h1>
-    <p>JNIOSH-TR-46 standard mapping &amp; certificate / hours estimation</p>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <img src="/assets/csa-logo.svg" alt="CSA Group"
+           onerror="this.outerHTML='<div class=topbar-logo-fallback>CSA</div>'" />
+    </div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-titles">
+      <span class="topbar-name">Japan Ex Scheme</span>
+      <span class="topbar-sub">JNIOSH-TR-46 Quoting Helper</span>
+    </div>
   </div>
+  <button class="btn-signout" onclick="signOut()">Sign out</button>
 </header>
+
+<div class="shell">
 
 <div class="panel" id="inputPanel">
   <div class="ptitle">Project Inputs</div>
@@ -152,8 +309,8 @@
     <button class="add-std-btn" onclick="addStdRow()">+ Add standard</button>
   </div>
 
-  <div class="field">
-    <label class="check-row" for="hasComps" style="margin-bottom:0;font-weight:400;font-size:13px;color:var(--tx);">
+  <div class="field" style="margin-bottom:0">
+    <label class="check-row" for="hasComps" style="font-weight:400;font-size:13px;color:var(--csa-coal);text-transform:none;letter-spacing:normal;">
       <input type="checkbox" id="hasComps">
       <span class="ck-label">Are there any certified components or separately certified equipment included (including cable glands)?</span>
     </label>
@@ -164,7 +321,9 @@
   </div>
 
   <div class="err" id="errBox"></div>
-  <button class="btn" onclick="calculate()">Calculate &rarr;</button>
+  <div style="margin-top:22px">
+    <button class="btn" onclick="calculate()">Calculate &rarr;</button>
+  </div>
 </div>
 
 <div id="results">
@@ -173,11 +332,8 @@
     <div class="ptitle">Japanese Standards Mapping</div>
     <table class="tbl">
       <thead><tr>
-        <th>IEC Standard</th>
-        <th>Ed</th>
-        <th>Year</th>
-        <th>JNIOSH Standard</th>
-        <th>Status</th>
+        <th>IEC Standard</th><th>Ed</th><th>Year</th>
+        <th>JNIOSH Standard</th><th>Status</th>
         <th style="text-align:right">Hrs</th>
         <th>Upgrade / Downgrade To</th>
       </tr></thead>
@@ -190,7 +346,7 @@
     <div class="ptitle">Certificates Required</div>
     <p class="sec-note">Derived from the marking above. First certificate is always Main; all subsequent are Variants.</p>
     <div class="cert-summary" id="certSummary"></div>
-    <div class="cert-list" id="certList"></div>
+    <div class="cert-list"    id="certList"></div>
   </div>
 
   <div class="panel">
@@ -205,10 +361,23 @@
   <div class="action-row">
     <button class="btn btn-ghost" onclick="reset()">&#8592; Start Over</button>
   </div>
+
 </div>
 </div>
 
 <script>
+// ── AUTH GUARD ────────────────────────────────────────────────────────────────
+(function () {
+  if (sessionStorage.getItem('jpn_auth') !== 'authenticated') {
+    window.location.replace('/login.html');
+  }
+})();
+
+function signOut() {
+  sessionStorage.removeItem('jpn_auth');
+  window.location.replace('/login.html');
+}
+
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const JPN = {
   '60079-0':  {jniosh:'JNIOSH-TR-46-1 Dec 2020',  targetEd:7, targetStd:'IEC 60079-0:2017 Ed 7.0'},
@@ -223,7 +392,7 @@ const JPN = {
   '60079-31': {jniosh:'JNIOSH-TR-46-9 Oct 2018',  targetEd:2, targetStd:'IEC 60079-31:2013 Ed 2.0'},
 };
 
-// ── STANDARDS INPUT ROWS ──────────────────────────────────────────────────────
+// ── STANDARDS ROWS ────────────────────────────────────────────────────────────
 let stdRowCount = 0;
 function addStdRow(stdVal='', edVal='', yrVal='') {
   stdRowCount++;
@@ -231,15 +400,14 @@ function addStdRow(stdVal='', edVal='', yrVal='') {
   const div = document.createElement('div');
   div.className = 'std-input-row'; div.id = id;
   div.innerHTML = `
-    <input type="text" placeholder="IEC 60079-0" value="${esc(stdVal)}" class="std-name">
-    <input type="number" placeholder="Ed" min="1" max="20" value="${edVal}" class="std-ed">
+    <input type="text"   placeholder="IEC 60079-0" value="${esc(stdVal)}" class="std-name">
+    <input type="number" placeholder="Ed"   min="1"    max="20"   value="${edVal}" class="std-ed">
     <input type="number" placeholder="Year" min="1960" max="2030" value="${yrVal}" class="std-yr">
     <button class="std-remove" onclick="removeStdRow('${id}')" title="Remove">✕</button>`;
   document.getElementById('stdInputs').appendChild(div);
 }
-function removeStdRow(id) { const el=document.getElementById(id); if(el) el.remove(); }
+function removeStdRow(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
-// ── PARSE STANDARD ROW ────────────────────────────────────────────────────────
 function parseStdRow(row) {
   const nameRaw = row.querySelector('.std-name').value.trim();
   const edRaw   = row.querySelector('.std-ed').value.trim();
@@ -250,28 +418,25 @@ function parseStdRow(row) {
   return {raw:nameRaw, part:'60079-'+m[1], ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
 }
 
-// ── PARSE MARKING → CERTIFICATES ─────────────────────────────────────────────
+// ── PARSE MARKING ─────────────────────────────────────────────────────────────
 function expandLine(line) {
-  // Range: T6-T1 or T6...T1 (1-3 dots or dashes between two T-numbers)
   const rangeM = line.match(/\bT(\d+)\s*(?:\.{2,3}|-)\s*T(\d+)\b/i);
   if (rangeM) {
-    const hi=parseInt(rangeM[1]), lo=parseInt(rangeM[2]);
-    const res=[];
-    for (let t=hi; t>=lo; t--) res.push(line.replace(rangeM[0], 'T'+t));
+    const hi = parseInt(rangeM[1]), lo = parseInt(rangeM[2]);
+    const res = [];
+    for (let t = hi; t >= lo; t--) res.push(line.replace(rangeM[0], 'T'+t));
     return res;
   }
-  // Slash: T6/T4 or T6/T5/T4
   const slashM = line.match(/\bT\d+(?:\/T\d+)+\b/i);
   if (slashM) return slashM[0].split('/').map(p => line.replace(slashM[0], p));
   return [line];
 }
-
 function parseMarking(raw) {
-  const lines = raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  const lines = raw.split('\n').map(s => s.trim()).filter(Boolean);
   const certs = [];
   for (const line of lines)
     for (const marking of expandLine(line))
-      certs.push({marking, type: certs.length===0 ? 'MAIN' : 'VARIANT'});
+      certs.push({marking, type: certs.length === 0 ? 'MAIN' : 'VARIANT'});
   return certs;
 }
 
@@ -279,9 +444,9 @@ function parseMarking(raw) {
 function calculate() {
   const markRaw  = document.getElementById('marking').value.trim();
   const hasComps = document.getElementById('hasComps').checked;
-  const numComps = parseInt(document.getElementById('numComps').value)||0;
+  const numComps = parseInt(document.getElementById('numComps').value) || 0;
   const errBox   = document.getElementById('errBox');
-  errBox.className='err'; errBox.textContent='';
+  errBox.className = 'err'; errBox.textContent = '';
 
   if (!markRaw) { showErr('Please enter the IECEx certificate marking.'); return; }
   const stdRows = Array.from(document.querySelectorAll('#stdInputs .std-input-row'));
@@ -290,110 +455,104 @@ function calculate() {
   const parsedStds = stdRows.map(parseStdRow).filter(Boolean);
   if (!parsedStds.length) { showErr('Please enter at least one IECEx standard.'); return; }
 
-  const noEd = parsedStds.filter(p=>!p.ed);
-  if (noEd.length) { showErr('Please enter the edition number for: '+noEd.map(p=>p.raw).join(', ')); return; }
-  const unknownPart = parsedStds.filter(p=>!p.part);
-  if (unknownPart.length) { showErr('Could not read part number from: '+unknownPart.map(p=>p.raw).join(', ')); return; }
-  const notInScheme = parsedStds.filter(p=>!JPN[p.part]);
+  const noEd = parsedStds.filter(p => !p.ed);
+  if (noEd.length) { showErr('Please enter the edition number for: ' + noEd.map(p => p.raw).join(', ')); return; }
+  const unknownPart = parsedStds.filter(p => !p.part);
+  if (unknownPart.length) { showErr('Could not read part number from: ' + unknownPart.map(p => p.raw).join(', ')); return; }
+  const notInScheme = parsedStds.filter(p => !JPN[p.part]);
   if (notInScheme.length) {
-    showErr('The following standard(s) are not part of the Japanese Ex scheme and must be removed:\n'+notInScheme.map(p=>p.raw).join('\n'));
+    showErr('The following standard(s) are not part of the Japanese Ex scheme and must be removed:\n' + notInScheme.map(p => p.raw).join('\n'));
     return;
   }
 
-  // Build std results
   let totalHours = 0;
   const stdResults = parsedStds.map(p => {
-    const map = JPN[p.part];
-    const edGap = map.targetEd - p.ed;  // positive = need upgrade, negative = newer
-    let statusTag, hours=0, upgradeTo='';
+    const map   = JPN[p.part];
+    const edGap = map.targetEd - p.ed;
+    let statusTag, hours = 0, upgradeTo = '';
 
     if (p.ed === map.targetEd) {
       statusTag = '<span class="tag t-ok">✓ Current</span>';
     } else if (p.ed > map.targetEd) {
-      // Newer than Japanese target — downgrade needed, 4 hrs flat
-      hours = 4;
-      totalHours += 4;
+      hours = 4; totalHours += 4;
       upgradeTo = map.targetStd;
       statusTag = '<span class="tag t-new">↑ Newer – downgrade needed</span>';
     } else {
-      // Older — upgrade needed, gap × 4 hrs
-      hours = edGap * 4;
-      totalHours += hours;
+      hours = edGap * 4; totalHours += hours;
       upgradeTo = map.targetStd;
       statusTag = `<span class="tag t-warn">⚠ Upgrade needed (${edGap} ed${edGap>1?'s':''})</span>`;
     }
     return {raw:p.raw, ed:p.ed, year:p.year||'—', jniosh:map.jniosh, statusTag, hours, upgradeTo};
   });
 
-  const certs = parseMarking(markRaw);
-  const compHours = hasComps ? numComps*4 : 0;
+  const certs      = parseMarking(markRaw);
+  const compHours  = hasComps ? numComps * 4 : 0;
   const grandTotal = totalHours + compHours;
 
-  // ── RENDER standards
   document.getElementById('stdBody').innerHTML = stdResults.map(r => `
     <tr>
-      <td style="font-family:var(--mono);font-size:12px">${esc(r.raw)}</td>
-      <td style="font-family:var(--mono);font-size:12px;text-align:center">${r.ed}</td>
-      <td style="font-family:var(--mono);font-size:12px;text-align:center;color:var(--tx2)">${r.year}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--tx2)">${esc(r.jniosh)}</td>
+      <td style="font-family:var(--ff-mono);font-size:12px">${esc(r.raw)}</td>
+      <td style="font-family:var(--ff-mono);font-size:12px;text-align:center">${r.ed}</td>
+      <td style="font-family:var(--ff-mono);font-size:12px;text-align:center;color:var(--csa-smoke)">${r.year}</td>
+      <td style="font-family:var(--ff-mono);font-size:11px;color:var(--csa-smoke)">${esc(r.jniosh)}</td>
       <td>${r.statusTag}</td>
-      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:${r.hours>0?'var(--amber)':'var(--tx2)'}">
-        ${r.hours>0 ? r.hours+' hrs' : '—'}
+      <td style="text-align:right;font-family:var(--ff-mono);font-weight:600;color:${r.hours>0?'var(--csa-warning)':'var(--csa-smoke)'}">
+        ${r.hours > 0 ? r.hours + ' hrs' : '—'}
       </td>
-      <td>${r.upgradeTo ? `<span class="upgrade-to">${esc(r.upgradeTo)}</span>` : '<span style="color:var(--tx2)">—</span>'}</td>
+      <td>${r.upgradeTo ? `<span class="upgrade-to">${esc(r.upgradeTo)}</span>` : '<span style="color:var(--csa-smoke)">—</span>'}</td>
     </tr>`).join('');
 
   const upgNote = document.getElementById('upgNote');
   if (totalHours > 0) {
     upgNote.textContent = `Standards hours: upgrades at 4 hrs per edition step; downgrades (newer than Japanese target) at 4 hrs flat. Total: ${totalHours} hrs.`;
-    upgNote.style.display='block';
-  } else { upgNote.style.display='none'; }
+    upgNote.style.display = 'block';
+  } else { upgNote.style.display = 'none'; }
 
-  // ── RENDER certs
-  const mainCt=certs.filter(c=>c.type==='MAIN').length;
-  const variantCt=certs.filter(c=>c.type==='VARIANT').length;
-  document.getElementById('certSummary').innerHTML=`
-    <div class="cs-item"><div class="lbl">Main</div><div class="val" style="color:var(--orange)">${mainCt}</div></div>
-    <div class="cs-item"><div class="lbl">Variants</div><div class="val" style="color:var(--blue)">${variantCt}</div></div>
+  const mainCt    = certs.filter(c => c.type === 'MAIN').length;
+  const variantCt = certs.filter(c => c.type === 'VARIANT').length;
+  document.getElementById('certSummary').innerHTML = `
+    <div class="cs-item"><div class="lbl">Main</div><div class="val" style="color:var(--csa-midnight)">${mainCt}</div></div>
+    <div class="cs-item"><div class="lbl">Variants</div><div class="val" style="color:var(--csa-cerulean)">${variantCt}</div></div>
     <div class="cs-item"><div class="lbl">Total Certificates</div><div class="val">${certs.length}</div></div>`;
-  document.getElementById('certList').innerHTML=certs.map(c=>`
+  document.getElementById('certList').innerHTML = certs.map(c => `
     <div class="cert-row">
       <span class="cbadge ${c.type==='MAIN'?'c-main':'c-var'}">${c.type}</span>
       <span class="cert-marking">${esc(c.marking)}</span>
     </div>`).join('');
 
-  // ── RENDER hours
-  const hItems=[{lbl:'Standards Adjustment Hours',val:totalHours,note:'Upgrade: 4 hrs × edition gap. Downgrade: 4 hrs flat.'}];
-  if (hasComps) hItems.push({lbl:`Component Assessment (${numComps} × 4 hrs)`,val:compHours,note:''});
-  document.getElementById('hGrid').innerHTML=hItems.map(h=>`
+  const hItems = [{lbl:'Standards Adjustment Hours', val:totalHours, note:'Upgrade: 4 hrs × edition gap. Downgrade: 4 hrs flat.'}];
+  if (hasComps) hItems.push({lbl:`Component Assessment (${numComps} × 4 hrs)`, val:compHours, note:''});
+  document.getElementById('hGrid').innerHTML = hItems.map(h => `
     <div class="h-card">
       <div class="lbl">${h.lbl}</div>
       <div class="val">${h.val}<span>hrs</span></div>
-      ${h.note ? `<div style="font-size:10px;color:var(--tx2);margin-top:4px">${h.note}</div>` : ''}
+      ${h.note ? `<div class="note">${h.note}</div>` : ''}
     </div>`).join('');
-  document.getElementById('hTotal').innerHTML=`${grandTotal}<span>hrs</span>`;
+  document.getElementById('hTotal').innerHTML = `${grandTotal}<span>hrs</span>`;
 
-  document.getElementById('results').style.display='block';
-  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function showErr(msg){const b=document.getElementById('errBox');b.textContent=msg;b.className='err show';}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function reset(){
-  document.getElementById('marking').value='';
-  document.getElementById('stdInputs').innerHTML='';
-  stdRowCount=0;
+function showErr(msg) { const b = document.getElementById('errBox'); b.textContent = msg; b.className = 'err show'; }
+function esc(s)       { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function reset() {
+  document.getElementById('marking').value = '';
+  document.getElementById('stdInputs').innerHTML = '';
+  stdRowCount = 0;
   addStdRow(); addStdRow(); addStdRow();
-  document.getElementById('hasComps').checked=false;
-  document.getElementById('numComps').value=1;
+  document.getElementById('hasComps').checked = false;
+  document.getElementById('numComps').value   = 1;
   document.getElementById('compSub').classList.remove('visible');
-  document.getElementById('errBox').className='err';
-  document.getElementById('results').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('errBox').className = 'err';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-document.getElementById('hasComps').addEventListener('change',function(){
-  document.getElementById('compSub').classList.toggle('visible',this.checked);
+
+document.getElementById('hasComps').addEventListener('change', function () {
+  document.getElementById('compSub').classList.toggle('visible', this.checked);
 });
+
 addStdRow(); addStdRow(); addStdRow();
 </script>
 </body>
