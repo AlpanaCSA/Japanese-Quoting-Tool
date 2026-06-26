@@ -140,6 +140,15 @@ input[type=text]:focus, input[type=number]:focus {
   border-color: var(--csa-cerulean);
   box-shadow: 0 0 0 3px rgba(24,103,190,0.12);
 }
+select {
+  background: var(--csa-white); border: 1px solid var(--csa-gray-200);
+  color: var(--csa-coal); font: 400 12px/1 var(--ff-mono);
+  padding: 7px 8px; outline: none; cursor: pointer; width: 100%;
+  transition: border-color 120ms var(--ease-std), box-shadow 120ms var(--ease-std);
+}
+select:focus { border-color: var(--csa-cerulean); box-shadow: 0 0 0 3px rgba(24,103,190,0.12); }
+select:disabled { background: var(--csa-gray-100); color: var(--csa-smoke); cursor: not-allowed; }
+input[readonly] { background: var(--csa-gray-100); color: var(--csa-smoke); cursor: default; }
 .field { margin-bottom: 22px; }
 
 .hint-box {
@@ -171,7 +180,7 @@ input[type=text]:focus, input[type=number]:focus {
 
 .std-inputs { display: flex; flex-direction: column; gap: 6px; }
 .std-col-hdrs {
-  display: grid; grid-template-columns: 1fr 64px 80px 30px;
+  display: grid; grid-template-columns: 1fr 92px 78px 30px;
   gap: 6px; margin-bottom: 4px; padding: 0 2px;
 }
 .std-col-hdrs span { font: 700 9px/1 var(--ff-sans); color: var(--csa-smoke); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -392,43 +401,112 @@ const JPN = {
   '60079-31': {jniosh:'JNIOSH-TR-46-9 Oct 2018',  targetEd:2, targetStd:'IEC 60079-31:2013 Ed 2.0'},
 };
 
+// Short titles for the standard dropdown.
+const PART_NAMES = {
+  '60079-0':  'General requirements',
+  '60079-1':  'Flameproof "d"',
+  '60079-2':  'Pressurized "p"',
+  '60079-6':  'Liquid immersion "o"',
+  '60079-7':  'Increased safety "e"',
+  '60079-11': 'Intrinsic safety "i"',
+  '60079-15': 'Type of protection "n"',
+  '60079-18': 'Encapsulation "m"',
+  '60079-28': 'Optical radiation',
+  '60079-31': 'Dust "t"',
+};
+
+// Real published IEC editions per part (edition → publication year), verified
+// against webstore.iec.ch (current as of June 2026). The dropdowns offer ONLY
+// these combinations, so a year/edition that doesn't exist can't be selected.
+// "EN IEC" CENELEC-adoption years are deliberately excluded — they are not
+// separate IEC base editions.
+const EDITIONS = {
+  '60079-0':  [{ed:4,year:2004},{ed:5,year:2007},{ed:6,year:2011},{ed:7,year:2017},{ed:8,year:2026}],
+  '60079-1':  [{ed:4,year:2001},{ed:5,year:2003},{ed:6,year:2007},{ed:7,year:2014}],
+  '60079-2':  [{ed:4,year:2001},{ed:5,year:2007},{ed:6,year:2014}],
+  '60079-6':  [{ed:3,year:2007},{ed:4,year:2015}],
+  '60079-7':  [{ed:4,year:2006},{ed:5,year:2015}],
+  '60079-11': [{ed:5,year:2006},{ed:6,year:2011},{ed:7,year:2023}],
+  '60079-15': [{ed:3,year:2005},{ed:4,year:2010},{ed:5,year:2017}],
+  '60079-18': [{ed:2,year:2004},{ed:3,year:2009},{ed:4,year:2014},{ed:5,year:2025}],
+  '60079-28': [{ed:1,year:2006},{ed:2,year:2015},{ed:3,year:2025}],
+  '60079-31': [{ed:1,year:2008},{ed:2,year:2013},{ed:3,year:2022}],
+};
+
 // ── STANDARDS ROWS ────────────────────────────────────────────────────────────
 let stdRowCount = 0;
-function addStdRow(stdVal='', edVal='', yrVal='') {
+function addStdRow(partVal='', edVal='') {
   stdRowCount++;
   const id = 'std-' + stdRowCount;
   const div = document.createElement('div');
   div.className = 'std-input-row'; div.id = id;
+  const partOpts = Object.keys(JPN).map(p =>
+    `<option value="${p}"${p===partVal?' selected':''}>IEC ${p} — ${esc(PART_NAMES[p]||'')}</option>`).join('');
   div.innerHTML = `
-    <input type="text"   placeholder="IEC 60079-0" value="${esc(stdVal)}" class="std-name">
-    <input type="number" placeholder="Ed"   min="1"    max="20"   value="${edVal}" class="std-ed">
-    <input type="number" placeholder="Year" min="1960" max="2030" value="${yrVal}" class="std-yr">
+    <select class="std-name" onchange="onStdNameChange(this)">
+      <option value="">Select standard…</option>
+      ${partOpts}
+    </select>
+    <select class="std-ed" onchange="syncYear(this.closest('.std-input-row'))" disabled>
+      <option value="">Ed</option>
+    </select>
+    <input type="text" class="std-yr" placeholder="Year" readonly>
     <button class="std-remove" onclick="removeStdRow('${id}')" title="Remove">✕</button>`;
   document.getElementById('stdInputs').appendChild(div);
+  if (partVal) populateEditions(div, partVal, edVal);
 }
 function removeStdRow(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
+// Fill the edition dropdown with only the editions that exist for `part`,
+// then drive the read-only year field off the selected edition.
+function populateEditions(row, part, selectedEd='') {
+  const edSel = row.querySelector('.std-ed');
+  const list  = EDITIONS[part] || [];
+  edSel.innerHTML = '<option value="">Ed</option>' + list.map(e =>
+    `<option value="${e.ed}" data-year="${e.year}"${String(e.ed)===String(selectedEd)?' selected':''}>Ed ${e.ed}.0</option>`).join('');
+  edSel.disabled = list.length === 0;
+  syncYear(row);
+}
+function onStdNameChange(sel) {
+  const row = sel.closest('.std-input-row');
+  if (sel.value) { populateEditions(row, sel.value); return; }
+  const edSel = row.querySelector('.std-ed');
+  edSel.innerHTML = '<option value="">Ed</option>'; edSel.disabled = true;
+  syncYear(row);
+}
+function syncYear(row) {
+  const edSel = row.querySelector('.std-ed');
+  const opt   = edSel.options[edSel.selectedIndex];
+  row.querySelector('.std-yr').value = (opt && opt.dataset.year) ? opt.dataset.year : '';
+}
+
 function parseStdRow(row) {
-  const nameRaw = row.querySelector('.std-name').value.trim();
-  const edRaw   = row.querySelector('.std-ed').value.trim();
-  const yrRaw   = row.querySelector('.std-yr').value.trim();
-  if (!nameRaw) return null;
-  const m = nameRaw.match(/60079-(\d+(?:-\d+)?)/);
-  if (!m) return {raw:nameRaw, part:null, ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
-  return {raw:nameRaw, part:'60079-'+m[1], ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
+  const part  = row.querySelector('.std-name').value;
+  const edRaw = row.querySelector('.std-ed').value;
+  const yrRaw = row.querySelector('.std-yr').value;
+  if (!part) return null;
+  return {raw:'IEC '+part, part, ed:parseInt(edRaw)||null, year:parseInt(yrRaw)||null};
 }
 
 // ── PARSE MARKING ─────────────────────────────────────────────────────────────
 function expandLine(line) {
+  // Temperature classes always expand high→low (T6 is the main cert, lower
+  // classes are variants), regardless of the order they were typed in. So both
+  // "T6...T1" and "T1...T6" — and "T6/T1" and "T1/T6" — yield the same list.
   const rangeM = line.match(/\bT(\d+)\s*(?:\.{2,3}|-)\s*T(\d+)\b/i);
   if (rangeM) {
-    const hi = parseInt(rangeM[1]), lo = parseInt(rangeM[2]);
+    const a = parseInt(rangeM[1]), b = parseInt(rangeM[2]);
+    const hi = Math.max(a, b), lo = Math.min(a, b);
     const res = [];
     for (let t = hi; t >= lo; t--) res.push(line.replace(rangeM[0], 'T'+t));
     return res;
   }
   const slashM = line.match(/\bT\d+(?:\/T\d+)+\b/i);
-  if (slashM) return slashM[0].split('/').map(p => line.replace(slashM[0], p));
+  if (slashM) {
+    const parts = slashM[0].split('/')
+      .sort((x, y) => parseInt(y.slice(1)) - parseInt(x.slice(1)));
+    return parts.map(p => line.replace(slashM[0], p));
+  }
   return [line];
 }
 function parseMarking(raw) {
@@ -456,7 +534,7 @@ function calculate() {
   if (!parsedStds.length) { showErr('Please enter at least one IECEx standard.'); return; }
 
   const noEd = parsedStds.filter(p => !p.ed);
-  if (noEd.length) { showErr('Please enter the edition number for: ' + noEd.map(p => p.raw).join(', ')); return; }
+  if (noEd.length) { showErr('Please select the edition for: ' + noEd.map(p => p.raw).join(', ')); return; }
   const unknownPart = parsedStds.filter(p => !p.part);
   if (unknownPart.length) { showErr('Could not read part number from: ' + unknownPart.map(p => p.raw).join(', ')); return; }
   const notInScheme = parsedStds.filter(p => !JPN[p.part]);
